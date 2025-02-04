@@ -1,4 +1,5 @@
 # utils.py
+from textblob import TextBlob
 
 def preprocess_response(response):
     from textblob import TextBlob
