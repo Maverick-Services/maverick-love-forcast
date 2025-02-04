@@ -105,9 +105,9 @@ app.jinja_env.variable_end_string = '%%'
 # Save the model
 joblib.dump(love_prediction, "love_prediction_model.pkl")
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+# @app.route('/')
+# def index():
+#     return render_template('index.html')
 
 @app.route('/predict', methods=['POST'])
 def predict():
