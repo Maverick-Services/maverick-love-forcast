@@ -6,6 +6,7 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from flask_cors import CORS
 from textblob import TextBlob
 import nltk
+import joblib
 import random
 # Download necessary NLTK data
 nltk.download('punkt')
@@ -53,9 +54,9 @@ def love_prediction(responses):
         return "Not Love"
 
 # Load the saved model
-with open("love_prediction_model.pkl", "rb") as file:
-    loaded_model = pickle.load(file)
-
+# with open("love_prediction_model.pkl", "rb") as file:
+#     loaded_model = pickle.load(file)
+loaded_model = joblib.load("love_prediction_model.pkl")
 # Create Flask app
 app = Flask(__name__)
 CORS(app)
