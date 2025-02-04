@@ -98,7 +98,7 @@ nltk.download('stopwords')
 
 # Create Flask app
 app = Flask(__name__)
-CORS(app)
+CORS(app , resources={r"/*": {"origins": "*"}})
 
 app.jinja_env.variable_start_string = '%%'
 app.jinja_env.variable_end_string = '%%'
@@ -113,12 +113,13 @@ joblib.dump(love_prediction, "love_prediction_model.pkl")
 @app.route('/predict', methods=['POST'])
 def predict():
     data = request.json
+    print("Received data:", data)
     responses = data.get('responses', [])
     prediction = love_prediction(responses)
+    print("Prediction:", prediction) 
     return jsonify({'prediction': prediction})
 
 
 if __name__ == '__main__':
-    
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=True)
