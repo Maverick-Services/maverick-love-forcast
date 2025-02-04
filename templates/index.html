@@ -1,0 +1,556 @@
+<!-- Html -->
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>True Love Forecast</title>
+        <!-- <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"> -->
+        <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&display=swap" rel="stylesheet">
+         <style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    background: conic-gradient(at top, #312e81, #581c87, #831843);
+    font-family: 'Cormorant Garamond', serif;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    overflow-x: hidden;
+}
+
+.stars-container {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.star {
+    position: absolute;
+    color: rgba(255, 255, 255, 0.3);
+    animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+.container {
+    max-width: 42rem;
+    width: 100%;
+    position: relative;
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.1);
+    /* backdrop-filter: blur(12px); */
+    border-radius: 1.5rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    padding: 2rem;
+    position: relative;
+    width: 100%;
+}
+
+.heart-icon {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.heart-glow {
+    position: absolute;
+    inset: -1rem;
+    background: #ec4899;
+    border-radius: 50%;
+    filter: blur(2rem);
+    opacity: 0.5;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.heart {
+    position: relative;
+    z-index: 1;
+    color: white;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 0.5;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.7;
+        transform: scale(1.1);
+    }
+}
+
+.title {
+    font-size: 2rem;
+    text-align: center;
+    margin: 1.5rem 0;
+    font-weight: 700;
+}
+
+.progress-dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+.dot {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.dot.active {
+    background: #ec4899;
+    transform: scale(1.25);
+}
+
+.dot.completed {
+    background: #4ade80;
+}
+
+.question-container {
+    position: relative;
+    min-height: 14rem;
+}
+
+.question {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.5s ease;
+    pointer-events: none;
+}
+
+.question.active {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: all;
+}
+
+.question h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: 1.25rem;
+}
+
+textarea {
+    width: 100%;
+    height: 8rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0.75rem;
+    color: white;
+    font-family: inherit;
+    font-size: 1rem;
+    resize: none;
+    transition: all 0.3s ease;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: #ec4899;
+    box-shadow: 0 0 0 2px rgba(236, 72, 153, 0.5);
+}
+
+textarea::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+textarea.error {
+    border-color: #ef4444;
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+.nav-button {
+    display: block;
+    width: 100%;
+    padding: 1rem;
+    margin-top: 1rem;
+    background: linear-gradient(to right, #ec4899, #8b5cf6);
+    border: none;
+    border-radius: 0.75rem;
+    color: white;
+    font-family: inherit;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-button:hover {
+    transform: scale(1.05);
+}
+
+.nav-button::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, #9f1239, #6d28d9);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.nav-button:hover::after {
+    opacity: 1;
+}
+
+.nav-button span {
+    position: relative;
+    z-index: 1;
+}
+
+/* Result Card Styles */
+.result-card {
+    text-align: center;
+}
+
+.result-icon {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 1.5rem;
+}
+
+.icon-glow {
+    position: absolute;
+    inset: -1.5rem;
+    border-radius: 50%;
+    filter: blur(2.5rem);
+    opacity: 0.3;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.result-svg {
+    position: relative;
+    z-index: 1;
+}
+
+.result-title {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(to right, #ec4899, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.result-message {
+    font-size: 1.125rem;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.result-card {
+    animation: fadeIn 1s ease-out forwards;
+}
+
+/* Mobile View Adjustments */
+@media (max-width: 768px) {
+    .card {
+        padding: 1.5rem;
+    }
+
+    .title {
+        font-size: 1.75rem;
+    }
+
+    .result-title {
+        font-size: 2rem;
+    }
+
+    .result-message {
+        font-size: 1rem;
+    }
+
+    .question-container {
+        min-height: 12rem;
+    }
+
+    textarea {
+        height: 6rem;
+        font-size: 0.875rem;
+    }
+
+    .nav-button {
+        padding: 0.875rem;
+        font-size: 0.9rem;
+    }
+}
+    </style>
+    </head>
+    <body>
+        <div class="stars-container">
+           
+        </div>     
+        <div class="container">
+            <div class="card question-card" id="questionCard">
+                <div class="heart-icon">
+                    <div class="heart-glow"></div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="heart">
+                        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                    </svg>
+                </div>
+    
+                <h1 class="title">True Love Forecast</h1>
+                <div class="progress-dots">
+                    <span class="dot active"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+                
+                <form id="predictionForm">
+                    <div class="question-container">
+                        <div class="question active" data-step="1">
+                            <h2>How do you feel when you're with this person?</h2>
+                            <textarea name="response1" required placeholder="Pour your heart out..."></textarea>
+                        </div>
+                        <div class="question" data-step="2">
+                            <h2>How does this person treat you in daily interactions?</h2>
+                            <textarea name="response2" required placeholder="Pour your heart out..."></textarea>
+                        </div>
+                        <div class="question" data-step="3">
+                            <h2>Do you feel emotionally connected to them? Why or why not?</h2>
+                            <textarea name="response3" required placeholder="Pour your heart out..."></textarea>
+                        </div>
+                        <div class="question" data-step="4">
+                            <h2>How does this person respond when you express your feelings?</h2>
+                            <textarea name="response4" required placeholder="Pour your heart out..."></textarea>
+                        </div>
+                        <div class="question" data-step="5">
+                            <h2>Do you feel valued and appreciated in this relationship?</h2>
+                            <textarea name="response5" required placeholder="Pour your heart out..."></textarea>
+                        </div>
+                        <div class="question" data-step="6">
+                            <h2>How do you see your future with this person?</h2>
+                            <textarea name="response6" required placeholder="Pour your heart out..."></textarea>
+                        </div>
+                    </div>
+    
+                    <button type="button" class="nav-button" id="nextBtn">Share Your Truth</button>
+                    <button type="submit" class="nav-button" id="submitBtn" style="display: none;">Reveal Your Destiny</button>
+                </form>
+            </div>
+    
+            <div class="card result-card" id="resultCard" style="display: none;">
+                <div class="result-content">
+                    <div class="result-icon">
+                        <div class="icon-glow"></div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="result-svg">
+                            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                        </svg>
+                    </div>
+                    <h2 class="result-title"></h2>
+                    <p class="result-message"></p>
+                    <button type="button" class="nav-button" id="resetBtn">Consult the Oracle Again</button>
+                </div>
+            </div>
+        </div>
+    
+        <!-- <script src="{{ url_for('static', filename='scripts.js') }}"></script> -->
+         <script>
+          
+    let currentStep = 1;
+    const totalSteps = 6;
+
+    function updateProgress() {
+        document.querySelectorAll('.dot').forEach((dot, index) => {
+            dot.className = `dot ${index < currentStep ? 'completed' : ''} ${index === currentStep - 1 ? 'active' : ''}`;
+        });
+    }
+
+    function showQuestion(step) {
+        document.querySelectorAll('.question').forEach(q => {
+            q.classList.remove('active');
+            if (parseInt(q.dataset.step) === step) {
+                q.classList.add('active');
+            }
+        });
+
+        const nextBtn = document.getElementById('nextBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        
+        if (step === totalSteps) {
+            nextBtn.style.display = 'none';
+            submitBtn.style.display = 'block';
+        } else {
+            nextBtn.style.display = 'block';
+            submitBtn.style.display = 'none';
+        }
+    }
+    
+  
+    
+
+    document.getElementById('nextBtn').addEventListener('click', () => {
+        const currentTextarea = document.querySelector(`.question[data-step="${currentStep}"] textarea`);
+        if (currentTextarea.value.trim() === '') {
+            currentTextarea.classList.add('error');
+            return;
+        }
+
+        if (currentStep < totalSteps) {
+            currentStep++;
+            updateProgress();
+            showQuestion(currentStep);
+        }
+    });
+
+    document.getElementById('predictionForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+    
+        const formData = new FormData(e.target);
+        const responses = [
+            formData.get('response1'),
+            formData.get('response2'),
+            formData.get('response3'),
+            formData.get('response4'),
+            formData.get('response5'),
+            formData.get('response6')
+        ];
+    
+        console.log("Responses to be sent:", responses); // Check if responses are collected correctly
+    
+        try {
+            const response = await fetch('http://127.0.0.1:5000/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ responses }),
+            });
+    
+            const result = await response.json();
+            console.log("Result from backend:", result); // Log the result received from the backend
+            showResult(result.prediction);
+        } catch (error) {
+            console.error('Error:', error);
+            // Fallback for demo
+            showResult(Math.random() > 0.5 ? 'Love' : 'Not Love');
+        }
+    });
+    
+
+    function showResult(prediction) {
+        const questionCard = document.getElementById('questionCard');
+        const resultCard = document.getElementById('resultCard');
+        const resultTitle = document.querySelector('.result-title');
+        const resultMessage = document.querySelector('.result-message');
+        const resultIcon = document.querySelector('.result-svg');
+
+        if (prediction === 'Love') {
+    resultTitle.textContent = 'True Love Awaits ✨';
+    resultMessage.textContent = 'The stars have aligned, and your hearts beat as one. Your destiny is written in the celestial dance of love.';
+    resultIcon.style.color = '#ec4899';
+    document.querySelector('.icon-glow').style.backgroundColor = '#ec4899';
+
+    // Heart icon for "Love"
+    resultIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" stroke="none"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>';
+
+} else {
+    resultTitle.textContent = 'Your Heart\'s Journey Continues';
+    resultMessage.textContent = 'Like the phases of the moon, love\'s path is ever-changing. Your true destiny still awaits among the stars.';
+    resultIcon.style.color = '#60a5fa';
+    document.querySelector('.icon-glow').style.backgroundColor = '#60a5fa';
+
+    // Broken Heart icon for "Not Love"
+    resultIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21c-4.42 0-8-3.58-8-8 0-4.42 3.58-8 8-8 2.35 0 4.51.92 6.09 2.57L12 14l-1.09-1.09-3.17-3.17L9.41 6.91l3.17 3.17L12 14l3.17 3.17-2.79 2.79-3.17-3.17L12 21z"/><path d="M12 14l3.17 3.17-2.79 2.79-3.17-3.17L12 14z"/></svg>';
+}
+
+
+
+        questionCard.style.display = 'none';
+        resultCard.style.display = 'block';
+    }
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+        currentStep = 1;
+        document.getElementById('predictionForm').reset();
+        updateProgress();
+        showQuestion(currentStep);
+        document.getElementById('questionCard').style.display = 'block';
+        document.getElementById('resultCard').style.display = 'none';
+    });
+
+    // Generate floating stars
+    const starsContainer = document.querySelector('.stars-container');
+    for (let i = 0; i < 20; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = `${Math.random() * 100}%`;  // Corrected line
+        star.style.top = `${Math.random() * 100}%`;   // Corrected line
+        star.style.animationDelay = `${Math.random() * 5}s`; // Corrected line
+        star.style.animationDuration = `${5 + Math.random() * 10}s`; // Corrected line 
+        
+        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svg.setAttribute('width', '16');
+        svg.setAttribute('height', '16');
+        svg.setAttribute('viewBox', '0 0 24 24');
+        svg.setAttribute('fill', 'none');
+        svg.setAttribute('stroke', 'currentColor');
+        svg.setAttribute('stroke-width', '2');
+        svg.setAttribute('stroke-linecap', 'round');
+        svg.setAttribute('stroke-linejoin', 'round');
+
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute('d', i % 2 === 0 
+            ? 'M12 3a1.5 1.5 0 0 0-1.5 1.5 1.5 1.5 0 0 0 1.5 1.5 1.5 1.5 0 0 0 1.5-1.5A1.5 1.5 0 0 0 12 3zm0 15a1.5 1.5 0 0 0-1.5 1.5 1.5 1.5 0 0 0 1.5-1.5A1.5 1.5 0 0 0 12 18zM3 12a1.5 1.5 0 0 0-1.5 1.5 1.5 1.5 0 0 0 1.5 1.5 1.5 1.5 0 0 0 1.5-1.5A1.5 1.5 0 0 0 3 12zm15 0a1.5 1.5 0 0 0-1.5 1.5 1.5 1.5 0 0 0 1.5-1.5A1.5 1.5 0 0 0 18 12z'
+            : 'M6 12l6-6 6 6-6 6-6-6z');
+        
+        svg.appendChild(path);
+        star.appendChild(svg);
+        starsContainer.appendChild(star);
+    }
+         </script>
+
+
+   
+        </body>
+    </html>
+
+
+
+
+
+
