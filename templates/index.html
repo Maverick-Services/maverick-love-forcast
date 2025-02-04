@@ -339,7 +339,7 @@ textarea.error {
                     </svg>
                 </div>
     
-                <h1 class="title">True Love Forecast</h1>
+                <h1 class="title">True Love Forcast</h1>
                 <div class="progress-dots">
                     <span class="dot active"></span>
                     <span class="dot"></span>
@@ -472,39 +472,39 @@ textarea.error {
     });
 
     document.getElementById('predictionForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-    
-        const formData = new FormData(e.target);
-        const responses = [
-            formData.get('response1'),
-            formData.get('response2'),
-            formData.get('response3'),
-            formData.get('response4'),
-            formData.get('response5'),
-            formData.get('response6')
-        ];
-    
-        console.log("Responses to be sent:", responses); // Check if responses are collected correctly
-    
-        try {
-            const response = await fetch('https://maverick-love-forcast.onrender.com/predict', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ responses }),
-            });
-    
-            const result = await response.json();
-            console.log("Result from backend:", result); // Log the result received from the backend
-            showResult(result.prediction);
-        } catch (error) {
-            console.error('Error:', error);
-            // Fallback for demo
-            showResult(Math.random() > 0.5 ? 'Love' : 'Not Love');
-        }
-    });
-    
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+    const responses = [
+        formData.get('response1'),
+        formData.get('response2'),
+        formData.get('response3'),
+        formData.get('response4'),
+        formData.get('response5'),
+        formData.get('response6')
+    ];
+
+    console.log("Responses to be sent:", responses); // Check if responses are collected correctly
+
+    try {
+        const response = await fetch('https://maverick-love-forcast.onrender.com/predict', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ responses }),
+        });
+
+        const result = await response.json();
+        console.log("Result from backend:", result); // Log the result received from the backend
+        showResult(result.prediction);
+    } catch (error) {
+        console.error('Error:', error);
+        // Fallback for demo
+        showResult(Math.random() > 0.5 ? 'Love' : 'Not Love');
+    }
+});
+
     function showResult(prediction) {
     const questionCard = document.getElementById('questionCard');
     const resultCard = document.getElementById('resultCard');
