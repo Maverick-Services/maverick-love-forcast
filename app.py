@@ -88,6 +88,7 @@ from utils import love_prediction
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 import nltk
+import os
 import joblib
 
 # Download necessary NLTK data
@@ -116,5 +117,8 @@ def predict():
     prediction = love_prediction(responses)
     return jsonify({'prediction': prediction})
 
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=True)

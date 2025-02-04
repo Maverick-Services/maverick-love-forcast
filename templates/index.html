@@ -349,7 +349,7 @@ textarea.error {
                     <span class="dot"></span>
                 </div>
                 
-                <form action="/predict" id="predictionForm">
+                <form  id="predictionForm">
                     <div class="question-container">
                         <div class="question active" data-step="1">
                             <h2>How do you feel when you're with this person?</h2>
@@ -487,7 +487,7 @@ textarea.error {
         console.log("Responses to be sent:", responses); // Check if responses are collected correctly
     
         try {
-            const response = await fetch('/predict', {
+            const response = await fetch('https://maverick-love-forcast.onrender.com/predict', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
