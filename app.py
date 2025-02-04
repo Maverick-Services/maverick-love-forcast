@@ -84,12 +84,70 @@
 
 
 # app.py
-from utils import love_prediction
-from flask import Flask, request, jsonify, render_template
-from flask_cors import CORS
+# from utils import love_prediction
+# from flask import Flask, request, jsonify, render_template
+# from flask_cors import CORS
+# import nltk
+# import os
+# import joblib
+
+# # Download necessary NLTK data
+# nltk.download('punkt')
+# nltk.download('vader_lexicon')
+# nltk.download('stopwords')
+# nltk.download('punkt_tab')
+
+# # Create Flask app
+# app = Flask(__name__)
+# CORS(app , resources={r"/*": {"origins": "*"}})
+
+# app.jinja_env.variable_start_string = '%%'
+# app.jinja_env.variable_end_string = '%%'
+
+# # Save the model
+# joblib.dump(love_prediction, "love_prediction_model.pkl")
+# responses = [
+#   "I feel bad",
+#   "He behaves angrily",
+#   "We are not emotionally connected to each other",
+#   "He does not respect my feelings",
+#   "No, he does not appreciate my relationship",
+#   "I do not like him"
+# ]
+
+# prediction = love_prediction(responses)
+# print(f"Prediction: {prediction}")
+
+# @app.route('/')
+# def index():
+#     return render_template('index.html')
+
+# @app.route('/predict', methods=['POST'])
+# def predict():
+#     data = request.json
+#     print("Received data:", data)
+#     responses = data.get('responses', [])
+#     prediction = love_prediction(responses)
+#     print("Prediction:", prediction) 
+#     return jsonify({'prediction': prediction})
+
+
+# if __name__ == '__main__':
+#     port = int(os.environ.get('PORT', 5000))
+#     app.run(host='0.0.0.0', port=port, debug=True)
+
+
 import nltk
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+from textblob import TextBlob
+import pickle
+from flask import Flask, request, jsonify, render_template
 import os
-import joblib
+
+# Initialize Flask app
+app = Flask(__name__)
 
 # Download necessary NLTK data
 nltk.download('punkt')
@@ -97,30 +155,68 @@ nltk.download('vader_lexicon')
 nltk.download('stopwords')
 nltk.download('punkt_tab')
 
-# Create Flask app
-app = Flask(__name__)
-CORS(app , resources={r"/*": {"origins": "*"}})
+# Initialize VADER sentiment analyzer
+sia = SentimentIntensityAnalyzer()
 
-app.jinja_env.variable_start_string = '%%'
-app.jinja_env.variable_end_string = '%%'
+# Function to preprocess the response
+def preprocess_response(response):
+    # Correct spelling errors
+    corrected_response = str(TextBlob(response).correct())
+    tokens = word_tokenize(corrected_response.lower())
+    return " ".join(tokens)
 
-# Save the model
-joblib.dump(love_prediction, "love_prediction_model.pkl")
+# Function to analyze the sentiment of the response
+def analyze_sentiment(response):
+    sentiment_score = sia.polarity_scores(response)
+    return sentiment_score['compound']
 
+# Function to predict love or not love based on multiple responses
+def love_prediction(responses):
+    total_sentiment = 0  # Sum of all sentiment scores
+
+    for response in responses:
+        processed_response = preprocess_response(response)
+        sentiment_score = analyze_sentiment(processed_response)
+        total_sentiment += sentiment_score  # Summing the scores
+
+    # Decision based on overall sentiment
+    if total_sentiment > 0:
+        return "Love"
+    else:
+        return "Not Love"
+
+# Save model
+with open("love_prediction_model.pkl", "wb") as file:
+    pickle.dump(love_prediction, file)
+
+
+responses = [
+  "I feel bad",
+  "He behaves angrily",
+  "We are  emotionally connected to each other",
+  "He does  respect my feelings",
+  "No, he does not appreciate my relationship",
+  "I do not like him"
+]
+
+prediction = love_prediction(responses)
+print(f"Prediction: {prediction}")
+# Route to render the index page (HTML)
 @app.route('/')
 def index():
     return render_template('index.html')
 
+# Route to predict love or not love based on multiple responses
 @app.route('/predict', methods=['POST'])
 def predict():
     data = request.json
     print("Received data:", data)
     responses = data.get('responses', [])
     prediction = love_prediction(responses)
-    print("Prediction:", prediction) 
+    print("Prediction:", prediction)
     return jsonify({'prediction': prediction})
 
-
+# Run the app on a specified port
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=True)
