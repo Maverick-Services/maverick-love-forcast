@@ -472,38 +472,48 @@ textarea.error {
         }
     });
     
-
     function showResult(prediction) {
-        const questionCard = document.getElementById('questionCard');
-        const resultCard = document.getElementById('resultCard');
-        const resultTitle = document.querySelector('.result-title');
-        const resultMessage = document.querySelector('.result-message');
-        const resultIcon = document.querySelector('.result-svg');
+    const questionCard = document.getElementById('questionCard');
+    const resultCard = document.getElementById('resultCard');
+    const resultTitle = document.querySelector('.result-title');
+    const resultMessage = document.querySelector('.result-message');
+    const resultIcon = document.querySelector('.result-svg');
+    const iconGlow = document.querySelector('.icon-glow');
 
-        if (prediction === 'Love') {
-    resultTitle.textContent = 'True Love Awaits ✨';
-    resultMessage.textContent = 'The stars have aligned, and your hearts beat as one. Your destiny is written in the celestial dance of love.';
-    resultIcon.style.color = '#ec4899';
-    document.querySelector('.icon-glow').style.backgroundColor = '#ec4899';
+    if (prediction === 'Love') {
+        resultTitle.textContent = 'True Love Awaits ✨';
+        resultMessage.textContent = 'The stars have aligned, and your hearts beat as one. Your destiny is written in the celestial dance of love.';
+        
+        // Update colors for Love
+        resultIcon.style.color = '#ec4899';
+        iconGlow.style.backgroundColor = '#ec4899';
 
-    // Heart icon for "Love"
-    resultIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" stroke="none"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>';
+        // Set Heart icon ❤️
+        resultIcon.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" stroke="none">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>`;
+    } else {
+        resultTitle.textContent = "Your Heart's Journey Continues";
+        resultMessage.textContent = "The stars aren’t aligned on this one. But who knows what the future holds?";
 
-} else {
-    resultTitle.textContent = 'Your Heart\'s Journey Continues';
-    resultMessage.textContent = 'Like the phases of the moon, love\'s path is ever-changing. Your true destiny still awaits among the stars.';
-    resultIcon.style.color = '#60a5fa';
-    document.querySelector('.icon-glow').style.backgroundColor = '#60a5fa';
+        // Update colors for Not Love
+        resultIcon.style.color = '#60a5fa';
+        iconGlow.style.backgroundColor = '#60a5fa';
 
-    // Broken Heart icon for "Not Love"
-    resultIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21c-4.42 0-8-3.58-8-8 0-4.42 3.58-8 8-8 2.35 0 4.51.92 6.09 2.57L12 14l-1.09-1.09-3.17-3.17L9.41 6.91l3.17 3.17L12 14l3.17 3.17-2.79 2.79-3.17-3.17L12 21z"/><path d="M12 14l3.17 3.17-2.79 2.79-3.17-3.17L12 14z"/></svg>';
+        // Set Broken Heart icon ❤️‍🩹
+        resultIcon.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+        <path d="m12 13-1-1 2-2-3-3 2-2"/>
+      </svg>`;
+    }
+
+    // Show result card and hide question card
+    questionCard.style.display = 'none';
+    resultCard.style.display = 'block';
 }
 
-
-
-        questionCard.style.display = 'none';
-        resultCard.style.display = 'block';
-    }
 
     document.getElementById('resetBtn').addEventListener('click', () => {
         currentStep = 1;
